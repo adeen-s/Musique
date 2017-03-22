@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:Musique="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_shuffle"
+        android:icon="@drawable/ic_shuffle_white_36dp"
+        android:orderInCategory="1"
+        Musique:showAsAction="always"
+        android:title="Shuffle"
+        android:visible="true"/>
+
+    <item
+        android:id="@+id/action_end"
+        android:icon="@drawable/ic_exit_to_app_white_36dp"
+        android:orderInCategory="2"
+        Musique:showAsAction="always"
+        android:title="End"
+        android:visible="true"/>
+</menu>
