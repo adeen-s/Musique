@@ -164,6 +164,7 @@ public class MusiqueService extends Service implements MediaPlayer.OnPreparedLis
     @Override
     public void onPrepared(MediaPlayer mp) {
         mp.start();
+        Log.v("onPreparedMusiqueServic", "--------->>>>>>in music service on prepared<<<<<<<<<--------");
 
         Intent notIntent = new Intent(this, MainActivity.class);
         notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -211,7 +212,7 @@ public class MusiqueService extends Service implements MediaPlayer.OnPreparedLis
             songPosn = newSong;
         } else {
             songPosn--;
-            if (songPosn == 0) {
+            if (songPosn < 0) {
                 songPosn = songs.size() - 1;
             }
         }

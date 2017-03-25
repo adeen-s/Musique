@@ -33,7 +33,7 @@ import java.util.Comparator;
 public class MainActivity extends AppCompatActivity {
 
     protected MusiqueService musicSrv;
-    protected Intent playIntent;
+    protected Intent playIntent, nowPlayingIntent;
     private ArrayList<Song> songList;
     private ListView songView;
     private boolean musicBound = false;
@@ -75,17 +75,6 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
         }
-        LinearLayout playingSong = (LinearLayout) findViewById(R.id.current_song);
-        playingSong.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent nowPlayingIntent = new Intent(MainActivity.this, NowPlaying.class);
-                // Start the new activity
-                if (songSelected) {
-                    startActivity(nowPlayingIntent);
-                }
-            }
-        });
         songView = (ListView) findViewById(R.id.song_list_main);
         songList = new ArrayList<Song>();
         getSongList();
@@ -97,6 +86,16 @@ public class MainActivity extends AppCompatActivity {
         SongAdapter songAdt = new SongAdapter(this, songList);
         songView.setAdapter(songAdt);
 
+        LinearLayout playingSong = (LinearLayout) findViewById(R.id.current_song);
+        playingSong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                nowPlayingIntent = new Intent(MainActivity.this, NowPlaying.class);
+                // Start the new activity
+                startActivity(nowPlayingIntent);
+
+            }
+        });
     }
 
     @Override
@@ -122,7 +121,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void songPicked(View view) {
         musicSrv.setSong(Integer.parseInt(view.getTag().toString()));
-        songSelected = musicSrv.playSong();
+        musicSrv.playSong();
+        startActivity(new Intent(MainActivity.this, NowPlaying.class));
     }
 
     public void setTitleInUi() {

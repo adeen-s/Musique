@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,10 +18,16 @@ import java.io.File;
 
 public class NowPlaying extends AppCompatActivity {
 
+    protected SeekBar seekBar;
     private MusiqueService musicSrv = Connector.mMainActivity.musicSrv;
-    private SeekBar seekBar;
     private Handler mHandler = new Handler();
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        seekBar.setMax(musicSrv.getDuration() / 1000);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +61,13 @@ public class NowPlaying extends AppCompatActivity {
             albumartView.setImageResource(R.drawable.image1);
         }
 
+
         musicSrv.player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             public void onPrepared(MediaPlayer mp) {
-                mp.start();
+                Log.v("onPreparedNowPlaying", "--------->>>>>>in nowplaying activity on prepared<<<<<<<<<--------");
                 seekBar.setMax(musicSrv.getDuration() / 1000);
+                Log.v("onPreparedListener", "getduration from seekbar  ---- >>" + musicSrv.getDuration());
+                mp.start();
             }
         });
 
