@@ -2,7 +2,6 @@ package com.example.android.musique;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,19 +16,19 @@ import java.util.ArrayList;
  * Created by adeen-s on 21/3/17.
  * Custom BaseAdapter to display the list of songs
  */
-public class SongAdapter extends BaseAdapter {
+public class AlbumAdapter extends BaseAdapter {
 
-    private ArrayList<Song> songs;
-    private LayoutInflater songInf;
+    private ArrayList<Album> albums;
+    private LayoutInflater albumInf;
 
-    public SongAdapter(Context c, ArrayList<Song> theSongs){
-        songs=theSongs;
-        songInf=LayoutInflater.from(c);
+    public AlbumAdapter(Context c, ArrayList<Album> theAlbums) {
+        albums = theAlbums;
+        albumInf = LayoutInflater.from(c);
     }
 
     @Override
     public int getCount() {
-        return songs.size();
+        return albums.size();
     }
 
     @Override
@@ -47,28 +46,27 @@ public class SongAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         //map to song layout
-        LinearLayout songLay = (LinearLayout)songInf.inflate(R.layout.song, parent, false);
+        LinearLayout songLay = (LinearLayout) albumInf.inflate(R.layout.album, parent, false);
         //get title and artist views
-        TextView songView = (TextView)songLay.findViewById(R.id.song_title);
-        TextView artistView = (TextView)songLay.findViewById(R.id.song_artist);
-        TextView albumView = (TextView)songLay.findViewById(R.id.song_album);
-        ImageView albumart = (ImageView) songLay.findViewById(R.id.album_art);
+        TextView albumView = (TextView) songLay.findViewById(R.id.album_title);
+        TextView artistView = (TextView) songLay.findViewById(R.id.album_artist);
+        TextView albumnr = (TextView) songLay.findViewById(R.id.album_no);
+        ImageView albumart = (ImageView) songLay.findViewById(R.id.album_art_album);
         //get song using position
-        Song currSong = songs.get(position);
+        Album currAlbum = albums.get(position);
         //get title and artist strings
-        songView.setText(currSong.getTitle());
-        artistView.setText(currSong.getArtist());
-        albumView.setText(currSong.getAlbum());
-        if (currSong.getAlbumart() != null) {
-            Bitmap bmp = BitmapFactory.decodeFile(currSong.getAlbumart());
+        albumView.setText(currAlbum.getAlbumName());
+        artistView.setText(currAlbum.getArtistName());
+        albumnr.setText((currAlbum.getNr_of_songs()) + " Songs");
+        if (currAlbum.getAlbumImg() != null) {
+            Bitmap bmp = currAlbum.getAlbumImg();
             albumart.setImageBitmap(bmp);
         } else {
             albumart.setImageResource(R.drawable.ic_music_video_black_48dp);
         }
         //Log.v("ALBUMART","Location-->"+currSong.getAlbumart());
         //set position as tag
-        songLay.setTag(position);
+        songLay.setTag(currAlbum.getID());
         return songLay;
     }
-
 }

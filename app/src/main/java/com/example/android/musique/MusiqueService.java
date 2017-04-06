@@ -116,6 +116,10 @@ public class MusiqueService extends Service implements MediaPlayer.OnPreparedLis
             Connector.mMainActivity.setTitleInUi();
             Connector.mMainActivity.setIconToPause();
         }
+        if (Connector.mAlbumActivity != null) {
+            Connector.mAlbumActivity.setTitleInUi();
+            Connector.mAlbumActivity.setIconToPause();
+        }
         if (Connector.mNowPlaying != null) {
             Connector.mNowPlaying.updateUi();
             Connector.mNowPlaying.setIconToPause();
@@ -128,6 +132,9 @@ public class MusiqueService extends Service implements MediaPlayer.OnPreparedLis
         if (Connector.mMainActivity != null) {
             Connector.mMainActivity.setIconToPause();
         }
+        if (Connector.mAlbumActivity != null) {
+            Connector.mAlbumActivity.setIconToPause();
+        }
         if (Connector.mNowPlaying != null) {
             Connector.mNowPlaying.setIconToPause();
         }
@@ -137,6 +144,9 @@ public class MusiqueService extends Service implements MediaPlayer.OnPreparedLis
         player.pause();
         if (Connector.mMainActivity != null) {
             Connector.mMainActivity.setIconToPlay();
+        }
+        if (Connector.mAlbumActivity != null) {
+            Connector.mAlbumActivity.setIconToPlay();
         }
         if (Connector.mNowPlaying != null) {
             Connector.mNowPlaying.setIconToPlay();

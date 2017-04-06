@@ -9,4 +9,5 @@ package com.example.android.musique;
 public class Connector {
     static MainActivity mMainActivity;
     static NowPlaying mNowPlaying;
+    static AlbumActivity mAlbumActivity;
 }
