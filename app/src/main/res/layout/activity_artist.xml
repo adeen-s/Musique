@@ -9,7 +9,7 @@
     tools:openDrawer="start">
 
     <LinearLayout
-        android:id="@+id/album_root_view_main"
+        android:id="@+id/artist_root_view_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFFFF"
@@ -17,20 +17,20 @@
         tools:context=".AlbumActivity">
 
         <ListView
-            android:id="@+id/album_list_album"
+            android:id="@+id/artist_list_artist"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"></ListView>
 
         <LinearLayout
-            android:id="@+id/mc_view_album"
+            android:id="@+id/mc_view_artist"
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:background="@color/colorPrimaryDark"
             android:orientation="horizontal">
 
             <LinearLayout
-                android:id="@+id/current_song_album"
+                android:id="@+id/current_song_artist"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginTop="8dp"
@@ -38,7 +38,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/song_name_album"
+                    android:id="@+id/song_name_artist"
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
                     android:layout_marginLeft="32dp"
@@ -48,7 +48,7 @@
                     tools:text="--------------------------" />
 
                 <TextView
-                    android:id="@+id/album_name_album"
+                    android:id="@+id/album_name_artist"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="32dp"
@@ -58,7 +58,7 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/play_button_album"
+                android:id="@+id/play_button_artist"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_marginRight="16dp"

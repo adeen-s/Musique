@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/artist"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:onClick="artistPicked"
+    android:orientation="horizontal"
+    android:padding="4dp">
+
+
+    <ImageView
+        android:id="@+id/album_art_artist"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="8dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/artist_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:textColor="@color/textColor"
+            android:textSize="18sp"
+            tools:text="Eminem" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/no_of_songs_artist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:textSize="16sp"
+                tools:text="6 Songs" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

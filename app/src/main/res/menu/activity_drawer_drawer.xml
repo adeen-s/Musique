@@ -6,10 +6,16 @@
             android:id="@+id/nav_album"
             android:icon="@drawable/ic_menu_gallery"
             android:title="Albums" />
+
         <item
             android:id="@+id/nav_songs"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Songs" />
+
+        <item
+            android:id="@+id/nav_artist"
+            android:icon="@drawable/ic_people_black_36dp"
+            android:title="Artists" />
 
 
     </group>

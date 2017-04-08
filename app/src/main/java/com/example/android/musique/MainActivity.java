@@ -37,7 +37,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     protected static SongAdapter songAdt;
     protected static boolean albumSelected = false;
+    protected static boolean artistSelected = false;
     protected static long albumID;
+    protected static String artistName;
     protected MusiqueService musicSrv;
     protected Intent playIntent, nowPlayingIntent, albumIntent, songPickedIntent;
     private ArrayList<Song> songList;
@@ -69,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
-        setNavigationViewListner();
+        setNavigationViewListener();
 
         Connector.mMainActivity = this;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -154,34 +156,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void getSongList() {
-        if (!albumSelected) {
-            Log.v("getSongList", "ALBUM NOT SELECTED");
-            ContentResolver musicResolver = getContentResolver();
-            Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-            Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
-            if (musicCursor != null && musicCursor.moveToFirst()) {
-                //get columns
-                int titleColumn = musicCursor.getColumnIndex
-                        (android.provider.MediaStore.Audio.Media.TITLE);
-                int idColumn = musicCursor.getColumnIndex
-                        (android.provider.MediaStore.Audio.Media._ID);
-                int artistColumn = musicCursor.getColumnIndex
-                        (android.provider.MediaStore.Audio.Media.ARTIST);
-                int albumidColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
-                int albumColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
-                //add songs to list
-                do {
-                    long thisId = musicCursor.getLong(idColumn);
-                    String thisTitle = musicCursor.getString(titleColumn);
-                    String thisArtist = musicCursor.getString(artistColumn);
-                    long thisAlbumid = musicCursor.getLong(albumidColumn);
-                    String thisAlbumart = getCoverArtPath(thisAlbumid, this);
-                    String thisAlbum = musicCursor.getString(albumColumn);
-                    songList.add(new Song(thisId, thisTitle, thisArtist, thisAlbumart, thisAlbum));
-                }
-                while (musicCursor.moveToNext());
-            }
-        } else {
+        if (albumSelected) {
             Log.v("getSongList", "ALBUM IS SELECTED");
             ContentResolver musicResolver = getContentResolver();
             Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -209,6 +184,64 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (thisAlbumid == albumID) {
                         songList.add(new Song(thisId, thisTitle, thisArtist, thisAlbumart, thisAlbum));
                     }
+                }
+                while (musicCursor.moveToNext());
+            }
+        } else if (artistSelected) {
+            Log.v("getSongList", "ARTIST IS SELECTED");
+            ContentResolver musicResolver = getContentResolver();
+            Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+            Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
+            if (musicCursor != null && musicCursor.moveToFirst()) {
+                //get columns
+                int titleColumn = musicCursor.getColumnIndex
+                        (android.provider.MediaStore.Audio.Media.TITLE);
+                int idColumn = musicCursor.getColumnIndex
+                        (android.provider.MediaStore.Audio.Media._ID);
+                int artistColumn = musicCursor.getColumnIndex
+                        (android.provider.MediaStore.Audio.Media.ARTIST);
+                int albumidColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
+                int albumColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
+                //add songs to list
+                do {
+                    long thisId = musicCursor.getLong(idColumn);
+                    String thisTitle = musicCursor.getString(titleColumn);
+                    String thisArtist = musicCursor.getString(artistColumn);
+                    long thisAlbumid = musicCursor.getLong(albumidColumn);
+                    String thisAlbumart = getCoverArtPath(thisAlbumid, this);
+                    String thisAlbum = musicCursor.getString(albumColumn);
+                    Log.v("GetSongList", "Value of artist = " + artistName);
+                    Log.v("GetSongList", "Value of thisartist = " + thisArtist);
+                    if (thisArtist.equals(artistName)) {
+                        songList.add(new Song(thisId, thisTitle, thisArtist, thisAlbumart, thisAlbum));
+                    }
+                }
+                while (musicCursor.moveToNext());
+            }
+        } else {
+            Log.v("getSongList", "ALBUM NOT SELECTED");
+            ContentResolver musicResolver = getContentResolver();
+            Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+            Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
+            if (musicCursor != null && musicCursor.moveToFirst()) {
+                //get columns
+                int titleColumn = musicCursor.getColumnIndex
+                        (android.provider.MediaStore.Audio.Media.TITLE);
+                int idColumn = musicCursor.getColumnIndex
+                        (android.provider.MediaStore.Audio.Media._ID);
+                int artistColumn = musicCursor.getColumnIndex
+                        (android.provider.MediaStore.Audio.Media.ARTIST);
+                int albumidColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
+                int albumColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
+                //add songs to list
+                do {
+                    long thisId = musicCursor.getLong(idColumn);
+                    String thisTitle = musicCursor.getString(titleColumn);
+                    String thisArtist = musicCursor.getString(artistColumn);
+                    long thisAlbumid = musicCursor.getLong(albumidColumn);
+                    String thisAlbumart = getCoverArtPath(thisAlbumid, this);
+                    String thisAlbum = musicCursor.getString(albumColumn);
+                    songList.add(new Song(thisId, thisTitle, thisArtist, thisAlbumart, thisAlbum));
                 }
                 while (musicCursor.moveToNext());
             }
@@ -316,13 +349,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 this.recreate();
                 break;
             }
+
+            case R.id.nav_artist: {
+                Intent artistIntent = new Intent(MainActivity.this, ArtistActivity.class);
+                startActivity(artistIntent);
+                break;
+            }
         }
         //close navigation drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    private void setNavigationViewListner() {
+    private void setNavigationViewListener() {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 

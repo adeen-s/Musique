@@ -10,4 +10,5 @@ public class Connector {
     static MainActivity mMainActivity;
     static NowPlaying mNowPlaying;
     static AlbumActivity mAlbumActivity;
+    static ArtistActivity mArtistActivity;
 }

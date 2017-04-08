@@ -31,6 +31,9 @@
         <activity
             android:name=".AlbumActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ArtistActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

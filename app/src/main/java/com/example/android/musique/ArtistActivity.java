@@ -2,8 +2,6 @@ package com.example.android.musique;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -25,9 +23,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class AlbumActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class ArtistActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ArrayList<Album> albumList;
+    private ArrayList<Artist> artistList;
     private MusiqueService musicSrv = Connector.mMainActivity.musicSrv;
     private Intent nowPlayingIntent;
     private String songName;
@@ -35,28 +33,28 @@ public class AlbumActivity extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_album);
+        setContentView(R.layout.activity_artist);
         setNavigationViewListener();
 
 
-        Connector.mAlbumActivity = this;
+        Connector.mArtistActivity = this;
         ListView albumView;
-        albumView = (ListView) findViewById(R.id.album_list_album);
-        albumList = new ArrayList<Album>();
-        getAlbumsLists();
-        Collections.sort(albumList, new Comparator<Album>() {
-            public int compare(Album a, Album b) {
-                return a.getAlbumName().compareTo(b.getAlbumName());
+        albumView = (ListView) findViewById(R.id.artist_list_artist);
+        artistList = new ArrayList<Artist>();
+        getArtistsLists();
+        Collections.sort(artistList, new Comparator<Artist>() {
+            public int compare(Artist a, Artist b) {
+                return a.getArtistName().compareTo(b.getArtistName());
             }
         });
-        AlbumAdapter albumAdt = new AlbumAdapter(this, albumList);
-        albumView.setAdapter(albumAdt);
+        ArtistAdapter artistAdt = new ArtistAdapter(this, artistList);
+        albumView.setAdapter(artistAdt);
 
-        LinearLayout playingSong = (LinearLayout) findViewById(R.id.current_song_album);
+        LinearLayout playingSong = (LinearLayout) findViewById(R.id.current_song_artist);
         playingSong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                nowPlayingIntent = new Intent(AlbumActivity.this, NowPlaying.class);
+                nowPlayingIntent = new Intent(ArtistActivity.this, NowPlaying.class);
                 // Start the new activity
                 startActivity(nowPlayingIntent);
 
@@ -108,17 +106,15 @@ public class AlbumActivity extends AppCompatActivity implements NavigationView.O
         musicSrv.pausePlayingSong();
     }
 
-    public void getAlbumsLists() {
+    public void getArtistsLists() {
         String where = null;
 
-        final Uri uri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
-        final String _id = MediaStore.Audio.Albums._ID;
-        final String album_name = MediaStore.Audio.Albums.ALBUM;
-        final String artist = MediaStore.Audio.Albums.ARTIST;
-        final String albumart = MediaStore.Audio.Albums.ALBUM_ART;
-        final String tracks = MediaStore.Audio.Albums.NUMBER_OF_SONGS;
+        final Uri uri = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
+        final String _id = MediaStore.Audio.Artists._ID;
+        final String artist_name = MediaStore.Audio.Artists.ARTIST;
+        final String tracks = MediaStore.Audio.Artists.NUMBER_OF_TRACKS;
 
-        final String[] columns = {_id, album_name, artist, albumart, tracks};
+        final String[] columns = {_id, artist_name, tracks};
         Cursor cursor = this.getContentResolver().query(uri, columns, where, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
@@ -126,14 +122,10 @@ public class AlbumActivity extends AppCompatActivity implements NavigationView.O
             do {
 
                 long id = cursor.getLong(cursor.getColumnIndex(_id));
-                String name = cursor.getString(cursor.getColumnIndex(album_name));
-                String artist2 = cursor.getString(cursor.getColumnIndex(artist));
-                String artPath = cursor.getString(cursor.getColumnIndex(albumart));
-                Bitmap art = BitmapFactory.decodeFile(artPath);
+                String name = cursor.getString(cursor.getColumnIndex(artist_name));
                 int nr = Integer.parseInt(cursor.getString(cursor.getColumnIndex(tracks)));
-                Log.v("AlbumList", "Album ID = " + id);
 
-                albumList.add(new Album(id, name, artist2, art, nr));
+                artistList.add(new Artist(id, name, nr));
 
             } while (cursor.moveToNext());
         }
@@ -143,29 +135,30 @@ public class AlbumActivity extends AppCompatActivity implements NavigationView.O
 
     public void setTitleInUi() {
         songName = musicSrv.getSongTitle();
-        TextView playingSong = (TextView) findViewById(R.id.song_name_album);
+        TextView playingSong = (TextView) findViewById(R.id.song_name_artist);
         playingSong.setText(songName);
         Log.v("SongPicked", "Set song name to " + songName);
-        TextView playingAlbum = (TextView) findViewById(R.id.album_name_album);
+        TextView playingAlbum = (TextView) findViewById(R.id.album_name_artist);
         playingAlbum.setText(musicSrv.getAlbumName());
     }
 
     public void setIconToPlay() {
-        ImageView playButton = (ImageView) findViewById(R.id.play_button_album);
+        ImageView playButton = (ImageView) findViewById(R.id.play_button_artist);
         playButton.setImageResource(R.drawable.ic_play_arrow_white_36dp);
     }
 
     public void setIconToPause() {
-        ImageView playButton = (ImageView) findViewById(R.id.play_button_album);
+        ImageView playButton = (ImageView) findViewById(R.id.play_button_artist);
         playButton.setImageResource(R.drawable.ic_pause_white_36dp);
     }
 
-    public void albumPicked(View view) {
-        Connector.mMainActivity.albumSelected = true;
-        Log.v("AlbumActivity", "AlbumSelected = " + Connector.mMainActivity.albumSelected);
-        Connector.mMainActivity.albumID = (Integer.parseInt(view.getTag().toString()));
-        Log.v("AlbumActivity", "---Going to main activity now---");
-        Intent t = new Intent(AlbumActivity.this, MainActivity.class);
+    public void artistPicked(View view) {
+        Connector.mMainActivity.artistSelected = true;
+        Log.v("ArtistActivity", "ArtistSelected = " + Connector.mMainActivity.artistSelected);
+        Connector.mMainActivity.artistName = (view.getTag().toString());
+        Log.v("ArtistActivity", "Artist Tag from view = " + (view.getTag().toString()));
+        Log.v("ArtistActivity", "---Going to main activity now---");
+        Intent t = new Intent(ArtistActivity.this, MainActivity.class);
         startActivity(t);
     }
 
@@ -175,14 +168,20 @@ public class AlbumActivity extends AppCompatActivity implements NavigationView.O
         switch (item.getItemId()) {
 
             case R.id.nav_album: {
+                Intent albumIntent = new Intent(ArtistActivity.this, AlbumActivity.class);
+                startActivity(albumIntent);
                 break;
             }
 
             case R.id.nav_songs: {
-                Connector.mMainActivity.albumID = -1;
-                Connector.mMainActivity.albumSelected = false;
-                Intent t = new Intent(AlbumActivity.this, MainActivity.class);
+                Connector.mMainActivity.artistName = "";
+                Connector.mMainActivity.artistSelected = false;
+                Intent t = new Intent(ArtistActivity.this, MainActivity.class);
                 startActivity(t);
+            }
+
+            case R.id.nav_artist: {
+                break;
             }
         }
         //close navigation drawer
