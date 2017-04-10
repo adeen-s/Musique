@@ -9,11 +9,15 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -25,7 +29,7 @@ import java.util.Comparator;
 
 public class ArtistActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ArrayList<Artist> artistList;
+    private ArrayList<Artist> artistList, artistSearch;
     private MusiqueService musicSrv = Connector.mMainActivity.musicSrv;
     private Intent nowPlayingIntent;
     private String songName;
@@ -38,9 +42,9 @@ public class ArtistActivity extends AppCompatActivity implements NavigationView.
 
 
         Connector.mArtistActivity = this;
-        ListView albumView;
-        albumView = (ListView) findViewById(R.id.artist_list_artist);
+        final ListView albumView = (ListView) findViewById(R.id.artist_list_artist);
         artistList = new ArrayList<Artist>();
+        artistSearch = new ArrayList<Artist>();
         getArtistsLists();
         Collections.sort(artistList, new Comparator<Artist>() {
             public int compare(Artist a, Artist b) {
@@ -65,6 +69,33 @@ public class ArtistActivity extends AppCompatActivity implements NavigationView.
             setTitleInUi();
             setIconToPause();
         }
+
+        final EditText searchBox = (EditText) findViewById(R.id.EditTextArtist);
+        searchBox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                artistSearch.clear();
+                int textLength = searchBox.getText().length();
+                for (int i = 0; i < artistList.size(); i++) {
+                    if (textLength <= artistList.get(i).getArtistName().length()) {
+                        if (searchBox.getText().toString().equalsIgnoreCase((String) artistList.get(i).getArtistName().subSequence(0, textLength))) {
+                            artistSearch.add(artistList.get(i));
+                        }
+                    }
+                }
+                albumView.setAdapter(new ArtistAdapter(getBaseContext(), artistSearch));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
     }
 
 

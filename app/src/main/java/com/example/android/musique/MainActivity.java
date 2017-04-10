@@ -17,11 +17,15 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -42,7 +46,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected static String artistName;
     protected MusiqueService musicSrv;
     protected Intent playIntent, nowPlayingIntent, albumIntent, songPickedIntent;
-    private ArrayList<Song> songList;
+    int textLength = 0;
+    private ArrayList<Song> songList, songSearch;
     private ListView songView;
     private boolean musicBound = false;
     private String songName;
@@ -88,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         songView = (ListView) findViewById(R.id.song_list_main);
         songList = new ArrayList<Song>();
+        songSearch = new ArrayList<Song>();
         getSongList();
         Collections.sort(songList, new Comparator<Song>() {
             public int compare(Song a, Song b) {
@@ -104,14 +110,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View view) {
                 nowPlayingIntent = new Intent(MainActivity.this, NowPlaying.class);
                 // Start the new activity
-                startActivity(nowPlayingIntent);
+                if (musicSrv != null && musicSrv.isPlaying()) {
+                    startActivity(nowPlayingIntent);
+                }
 
             }
         });
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         Log.v("MainActivity", "Inside onCreate");
 
+        Log.v("MainActivityOnCreate", "Now going to add textchanged listener");
+
+        final EditText searchBox = (EditText) findViewById(R.id.EditText01);
+        searchBox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                songSearch.clear();
+                textLength = searchBox.getText().length();
+                for (int i = 0; i < songList.size(); i++) {
+                    if (textLength <= songList.get(i).getTitle().length()) {
+                        if (searchBox.getText().toString().equalsIgnoreCase((String) songList.get(i).getTitle().subSequence(0, textLength))) {
+                            songSearch.add(songList.get(i));
+                        }
+                    }
+                }
+                songView.setAdapter(new SongAdapter(getBaseContext(), songSearch));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
     }
+
 
     @Override
     protected void onStart() {

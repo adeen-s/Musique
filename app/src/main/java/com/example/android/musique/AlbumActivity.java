@@ -11,11 +11,15 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -27,7 +31,7 @@ import java.util.Comparator;
 
 public class AlbumActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ArrayList<Album> albumList;
+    private ArrayList<Album> albumList, albumSearch;
     private MusiqueService musicSrv = Connector.mMainActivity.musicSrv;
     private Intent nowPlayingIntent;
     private String songName;
@@ -40,8 +44,8 @@ public class AlbumActivity extends AppCompatActivity implements NavigationView.O
 
 
         Connector.mAlbumActivity = this;
-        ListView albumView;
-        albumView = (ListView) findViewById(R.id.album_list_album);
+        final ListView albumView = (ListView) findViewById(R.id.album_list_album);
+        albumSearch = new ArrayList<Album>();
         albumList = new ArrayList<Album>();
         getAlbumsLists();
         Collections.sort(albumList, new Comparator<Album>() {
@@ -67,6 +71,32 @@ public class AlbumActivity extends AppCompatActivity implements NavigationView.O
             setTitleInUi();
             setIconToPause();
         }
+
+        final EditText searchBox = (EditText) findViewById(R.id.EditTextAlbum);
+        searchBox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                albumSearch.clear();
+                int textLength = searchBox.getText().length();
+                for (int i = 0; i < albumList.size(); i++) {
+                    if (textLength <= albumList.get(i).getAlbumName().length()) {
+                        if (searchBox.getText().toString().equalsIgnoreCase((String) albumList.get(i).getAlbumName().subSequence(0, textLength))) {
+                            albumSearch.add(albumList.get(i));
+                        }
+                    }
+                }
+                albumView.setAdapter(new AlbumAdapter(getBaseContext(), albumSearch));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
 
@@ -183,6 +213,12 @@ public class AlbumActivity extends AppCompatActivity implements NavigationView.O
                 Connector.mMainActivity.albumSelected = false;
                 Intent t = new Intent(AlbumActivity.this, MainActivity.class);
                 startActivity(t);
+            }
+
+            case R.id.nav_artist: {
+                Intent artistIntent = new Intent(AlbumActivity.this, ArtistActivity.class);
+                startActivity(artistIntent);
+                break;
             }
         }
         //close navigation drawer

@@ -16,11 +16,18 @@
         android:orientation="vertical"
         tools:context=".AlbumActivity">
 
+        <EditText
+            android:id="@+id/EditTextArtist"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="Search" />
+
+
         <ListView
             android:id="@+id/artist_list_artist"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"></ListView>
+            android:layout_weight="1" />
 
         <LinearLayout
             android:id="@+id/mc_view_artist"
