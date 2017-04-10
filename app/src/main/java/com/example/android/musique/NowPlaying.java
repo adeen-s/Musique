@@ -46,10 +46,10 @@ public class NowPlaying extends AppCompatActivity {
         TextView playingArtist = (TextView) findViewById(R.id.artist_name_playing);
         playingArtist.setText(musicSrv.getArtist());
         ImageView playPause = (ImageView) findViewById(R.id.play_pause_toggle_playing);
-        if (musicSrv.isPlaying()) {
-            playPause.setImageResource(R.drawable.ic_pause_white_36dp);
-        } else {
+        if (!musicSrv.isPlaying()) {
             playPause.setImageResource(R.drawable.ic_play_arrow_white_36dp);
+        } else {
+            playPause.setImageResource(R.drawable.ic_pause_white_36dp);
         }
         ImageView albumartView = (ImageView) findViewById(R.id.album_art_playing);
         if (musicSrv.getAlbumart() != null) {

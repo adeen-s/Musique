@@ -146,6 +146,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void afterTextChanged(Editable s) {
             }
         });
+
+        Sidebar indexBar = (Sidebar) findViewById(R.id.sideBar);
+        indexBar.setListView(songView);
     }
 
 

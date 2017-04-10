@@ -5,7 +5,7 @@ package com.example.android.musique;
  * This class a song to be played
  */
 
-public class Song {
+public class Song implements Comparable<Song>{
     private long id;
     private String title;
     private String artist;
@@ -38,5 +38,10 @@ public class Song {
 
     public String getAlbum() {
         return album;
+    }
+
+    @Override
+    public int compareTo(Song another) {
+        return title.compareToIgnoreCase(another.title);
     }
 }

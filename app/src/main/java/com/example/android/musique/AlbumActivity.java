@@ -62,7 +62,9 @@ public class AlbumActivity extends AppCompatActivity implements NavigationView.O
             public void onClick(View view) {
                 nowPlayingIntent = new Intent(AlbumActivity.this, NowPlaying.class);
                 // Start the new activity
-                startActivity(nowPlayingIntent);
+                if (musicSrv != null && musicSrv.isPlaying()) {
+                    startActivity(nowPlayingIntent);
+                }
 
             }
         });
@@ -97,6 +99,10 @@ public class AlbumActivity extends AppCompatActivity implements NavigationView.O
             }
         });
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        Sidebar indexBar = (Sidebar) findViewById(R.id.sideBarAlbum);
+        indexBar.setListView(albumView);
+
     }
 
 

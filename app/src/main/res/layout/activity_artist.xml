@@ -22,12 +22,23 @@
             android:layout_height="wrap_content"
             android:hint="Search" />
 
-
-        <ListView
-            android:id="@+id/artist_list_artist"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1">
+
+            <ListView
+                android:id="@+id/artist_list_artist"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <com.example.android.musique.Sidebar
+                android:id="@+id/sideBarArtist"
+                android:layout_width="22dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true" />
+        </RelativeLayout>
+
 
         <LinearLayout
             android:id="@+id/mc_view_artist"
