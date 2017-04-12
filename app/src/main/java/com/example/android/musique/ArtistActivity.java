@@ -101,6 +101,8 @@ public class ArtistActivity extends AppCompatActivity implements NavigationView.
         Sidebar indexBar = (Sidebar) findViewById(R.id.sideBarArtist);
         indexBar.setListView(albumView);
 
+        Log.v("ArtistActivity", "CREATED ARTIST ACTIVITY");
+
     }
 
 
@@ -205,7 +207,6 @@ public class ArtistActivity extends AppCompatActivity implements NavigationView.
 
             case R.id.nav_album: {
                 Intent albumIntent = new Intent(ArtistActivity.this, AlbumActivity.class);
-                this.finish();
                 startActivity(albumIntent);
                 break;
             }
@@ -213,8 +214,9 @@ public class ArtistActivity extends AppCompatActivity implements NavigationView.
             case R.id.nav_songs: {
                 Connector.mMainActivity.artistName = "";
                 Connector.mMainActivity.artistSelected = false;
+                Connector.mMainActivity.albumSelected = false;
+                Connector.mMainActivity.albumID = -1;
                 Intent t = new Intent(ArtistActivity.this, MainActivity.class);
-                this.finish();
                 startActivity(t);
             }
 

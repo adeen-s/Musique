@@ -217,14 +217,15 @@ public class AlbumActivity extends AppCompatActivity implements NavigationView.O
             case R.id.nav_songs: {
                 Connector.mMainActivity.albumID = -1;
                 Connector.mMainActivity.albumSelected = false;
+                Connector.mMainActivity.artistName = "";
+                Connector.mMainActivity.artistSelected = false;
                 Intent t = new Intent(AlbumActivity.this, MainActivity.class);
-                this.finish();
                 startActivity(t);
+                break;
             }
 
             case R.id.nav_artist: {
                 Intent artistIntent = new Intent(AlbumActivity.this, ArtistActivity.class);
-                this.finish();
                 startActivity(artistIntent);
                 break;
             }
