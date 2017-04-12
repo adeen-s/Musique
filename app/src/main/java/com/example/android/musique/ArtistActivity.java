@@ -205,6 +205,7 @@ public class ArtistActivity extends AppCompatActivity implements NavigationView.
 
             case R.id.nav_album: {
                 Intent albumIntent = new Intent(ArtistActivity.this, AlbumActivity.class);
+                this.finish();
                 startActivity(albumIntent);
                 break;
             }
@@ -213,6 +214,7 @@ public class ArtistActivity extends AppCompatActivity implements NavigationView.
                 Connector.mMainActivity.artistName = "";
                 Connector.mMainActivity.artistSelected = false;
                 Intent t = new Intent(ArtistActivity.this, MainActivity.class);
+                this.finish();
                 startActivity(t);
             }
 

@@ -379,6 +379,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()) {
 
             case R.id.nav_album: {
+                this.finish();
                 openAlbumActivity();
                 break;
             }
@@ -392,6 +393,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_artist: {
                 Intent artistIntent = new Intent(MainActivity.this, ArtistActivity.class);
+                this.finish();
                 startActivity(artistIntent);
                 break;
             }
