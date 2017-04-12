@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                     }
                 }
+                musicSrv.setList(songSearch);
                 songView.setAdapter(new SongAdapter(getBaseContext(), songSearch));
             }
 
