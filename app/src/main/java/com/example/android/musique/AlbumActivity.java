@@ -50,7 +50,7 @@ public class AlbumActivity extends AppCompatActivity implements NavigationView.O
         getAlbumsLists();
         Collections.sort(albumList, new Comparator<Album>() {
             public int compare(Album a, Album b) {
-                return a.getAlbumName().compareTo(b.getAlbumName());
+                return a.getAlbumName().toLowerCase().compareTo(b.getAlbumName().toLowerCase());
             }
         });
         AlbumAdapter albumAdt = new AlbumAdapter(this, albumList);

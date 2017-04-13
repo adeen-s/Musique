@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSongList();
         Collections.sort(songList, new Comparator<Song>() {
             public int compare(Song a, Song b) {
-                return a.getTitle().compareTo(b.getTitle());
+                return a.getTitle().toLowerCase().compareTo(b.getTitle().toLowerCase());
             }
         });
         songAdt = new SongAdapter(this, songList);
@@ -139,7 +139,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                     }
                 }
-                musicSrv.setList(songSearch);
+                if (musicSrv != null) {
+                    musicSrv.setList(songSearch);
+                }
                 songView.setAdapter(new SongAdapter(getBaseContext(), songSearch));
             }
 
@@ -384,9 +386,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             case R.id.nav_songs: {
-                albumID = -1;
-                albumSelected = false;
-                this.recreate();
+                if (albumSelected || artistSelected) {
+                    albumID = -1;
+                    albumSelected = false;
+                    artistName = "";
+                    artistSelected = false;
+                    this.recreate();
+                }
                 break;
             }
 

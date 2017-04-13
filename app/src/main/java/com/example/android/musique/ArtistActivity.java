@@ -48,7 +48,7 @@ public class ArtistActivity extends AppCompatActivity implements NavigationView.
         getArtistsLists();
         Collections.sort(artistList, new Comparator<Artist>() {
             public int compare(Artist a, Artist b) {
-                return a.getArtistName().compareTo(b.getArtistName());
+                return a.getArtistName().toLowerCase().compareTo(b.getArtistName().toLowerCase());
             }
         });
         ArtistAdapter artistAdt = new ArtistAdapter(this, artistList);

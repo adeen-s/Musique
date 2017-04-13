@@ -3,15 +3,17 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SectionIndexer;
 class Sidebar extends View {
+    float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 22, getResources().getDisplayMetrics());
+    private final int m_nItemHeight = (int) px;
     private char[] l;
     private SectionIndexer sectionIndexer = null;
     private ListView list;
-    private final int m_nItemHeight = 50;
     public Sidebar(Context context) {
         super(context);
         init();
@@ -20,15 +22,18 @@ class Sidebar extends View {
         super(context, attrs);
         init();
     }
+
+    public Sidebar(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init();
+    }
+
     private void init() {
         l = new char[] { '#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
                 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
         setBackgroundColor(0x44FFFFFF);
     }
-    public Sidebar(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init();
-    }
+
     public void setListView(ListView _list) {
         list = _list;
         sectionIndexer = (SectionIndexer) _list.getAdapter();
