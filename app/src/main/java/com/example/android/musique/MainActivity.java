@@ -1,6 +1,7 @@
 package com.example.android.musique;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -9,6 +10,7 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -94,66 +96,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         songView = (ListView) findViewById(R.id.song_list_main);
         songList = new ArrayList<Song>();
         songSearch = new ArrayList<Song>();
-        getSongList();
-        Collections.sort(songList, new Comparator<Song>() {
-            public int compare(Song a, Song b) {
-                return a.getTitle().toLowerCase().compareTo(b.getTitle().toLowerCase());
-            }
-        });
-        songAdt = new SongAdapter(this, songList);
-
-        songView.setAdapter(songAdt);
-
-        LinearLayout playingSong = (LinearLayout) findViewById(R.id.current_song);
-        playingSong.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                nowPlayingIntent = new Intent(MainActivity.this, NowPlaying.class);
-                // Start the new activity
-                if (musicSrv != null && musicSrv.isPlaying()) {
-                    startActivity(nowPlayingIntent);
-                }
-
-            }
-        });
-
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        Log.v("MainActivity", "Inside onCreate");
-
-        Log.v("MainActivityOnCreate", "Now going to add textchanged listener");
-
-        final EditText searchBox = (EditText) findViewById(R.id.EditText01);
-        searchBox.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                songSearch.clear();
-                textLength = searchBox.getText().length();
-                for (int i = 0; i < songList.size(); i++) {
-                    if (textLength <= songList.get(i).getTitle().length()) {
-                        if (searchBox.getText().toString().equalsIgnoreCase((String) songList.get(i).getTitle().subSequence(0, textLength))) {
-                            songSearch.add(songList.get(i));
-                        }
-                    }
-                }
-                if (musicSrv != null) {
-                    musicSrv.setList(songSearch);
-                }
-                songView.setAdapter(new SongAdapter(getBaseContext(), songSearch));
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-        Sidebar indexBar = (Sidebar) findViewById(R.id.sideBar);
-        indexBar.setListView(songView);
+        new Load().execute();
     }
-
 
     @Override
     protected void onStart() {
@@ -170,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         Log.v("MainActivity", "AlbumSelected is = " + albumSelected);
     }
-
 
     public void setIconToPlay() {
         ImageView playButton = (ImageView) findViewById(R.id.play_button_main);
@@ -290,7 +233,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-
     private String getCoverArtPath(long albumId, Context context) {
         Cursor albumCursor = context.getContentResolver().query(
                 MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
@@ -356,7 +298,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        this.moveTaskToBack(true);
+        if (!(albumSelected || artistSelected)) {
+            this.moveTaskToBack(true);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     public void play() {
@@ -417,6 +363,90 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.v("MainActivity", "Call to open album Activity");
         albumIntent = new Intent(MainActivity.this, AlbumActivity.class);
         startActivity(albumIntent);
+    }
+
+    class Load extends AsyncTask<String, String, String> {
+        ProgressDialog progDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progDialog = new ProgressDialog(MainActivity.this);
+            progDialog.setMessage("Loading...");
+            progDialog.setIndeterminate(false);
+            progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progDialog.setCancelable(true);
+            progDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... aurl) {
+            //do something while spinning circling show
+            getSongList();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String unused) {
+            super.onPostExecute(unused);
+            progDialog.dismiss();
+            Collections.sort(songList, new Comparator<Song>() {
+                public int compare(Song a, Song b) {
+                    return a.getTitle().toLowerCase().compareTo(b.getTitle().toLowerCase());
+                }
+            });
+            songAdt = new SongAdapter(MainActivity.this, songList);
+            songView.setAdapter(songAdt);
+
+            LinearLayout playingSong = (LinearLayout) findViewById(R.id.current_song);
+            playingSong.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    nowPlayingIntent = new Intent(MainActivity.this, NowPlaying.class);
+                    // Start the new activity
+                    if (musicSrv != null && musicSrv.isPlaying()) {
+                        startActivity(nowPlayingIntent);
+                    }
+
+                }
+            });
+
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+            Log.v("MainActivity", "Inside onCreate");
+
+            Log.v("MainActivityOnCreate", "Now going to add textchanged listener");
+
+            final EditText searchBox = (EditText) findViewById(R.id.EditText01);
+            searchBox.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    songSearch.clear();
+                    textLength = searchBox.getText().length();
+                    for (int i = 0; i < songList.size(); i++) {
+                        if (textLength <= songList.get(i).getTitle().length()) {
+                            if (searchBox.getText().toString().equalsIgnoreCase((String) songList.get(i).getTitle().subSequence(0, textLength))) {
+                                songSearch.add(songList.get(i));
+                            }
+                        }
+                    }
+                    if (musicSrv != null) {
+                        musicSrv.setList(songSearch);
+                    }
+                    songView.setAdapter(new SongAdapter(getBaseContext(), songSearch));
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
+
+            Sidebar indexBar = (Sidebar) findViewById(R.id.sideBar);
+            indexBar.setListView(songView);
+        }
     }
 
 }
